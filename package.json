@@ -1,0 +1,37 @@
+{
+  "name": "reactsnake",
+  "version": "1.0.0",
+  "description": "This is snake game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server/index.js",
+    "dev": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackzhen1996/reactSnake.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jackzhen1996/reactSnake/issues"
+  },
+  "homepage": "https://github.com/jackzhen1996/reactSnake#readme",
+  "dependencies": {
+    "css-loader": "^5.2.1",
+    "express": "^4.17.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "style-loader": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.15",
+    "@babel/preset-env": "^7.13.15",
+    "@babel/preset-react": "^7.13.13",
+    "babel-loader": "^8.2.2",
+    "nodemon": "^2.0.7",
+    "webpack": "^5.31.2",
+    "webpack-cli": "^4.6.0"
+  }
+}
