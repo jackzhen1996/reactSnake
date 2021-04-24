@@ -11,13 +11,14 @@ const App = () => {
     changeMode(false);
   }
 
+
   return (
     <div className = {styles.app}>
       <Landing chooseMode={chooseMode}/>
       {
         single? 'single player': 'multiplayer'
       }
-      <Board/>
+      <Board />
     </div>
   )
 };
