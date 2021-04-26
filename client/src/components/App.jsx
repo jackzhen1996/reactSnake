@@ -2,10 +2,11 @@ import React, {useState} from 'react';
 import styles from './styles.module.css';
 import Landing from './landing.jsx';
 import RulesAndControls from './game/gameRulesAndControls.jsx';
+import Title from './title.jsx';
 
 const singlePlayer = {
   mode :'single',
-  description: 'You vs a conmputer controlled snake',
+  description: "You vs a computer controlled snake. You'll probably lose. Use arrow keys to control",
 }
 
 const multiPlayer = {
@@ -21,16 +22,30 @@ const App = () => {
   const chooseMode = (mode) => {
     changeMode(mode==='single'?true:false);
   }
-
   return (
     <div className = {styles.app}>
-      <Landing chooseMode={chooseMode}/>
+      <Title/>
+      {
+        !start?
+
+        single?
+        <div className={styles.description}>{singlePlayer.description}</div>
+        :
+        <div className={styles.description}>{multiPlayer.description}</div>
+
+        :
+        null
+      }
+      {!start?
+        <Landing chooseMode={chooseMode}/>
+        :
+      null}
       {
         single?
         // description of game rules and controls for both modes, game starts after pressing start
-        <RulesAndControls data={singlePlayer}/>
+        <RulesAndControls getStart={setStart} data={singlePlayer}/>
           :
-        <RulesAndControls data={multiPlayer}/>
+        <RulesAndControls getStart={setStart} data={multiPlayer}/>
       }
     </div>
   )

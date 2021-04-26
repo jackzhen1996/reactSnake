@@ -1,4 +1,73 @@
 .app {
   height: 100%;
   width: 100%;
+  margin:0;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: hidden;
+  font-family: 'Roboto', sans-serif;
+  font-size: 25px;
+  margin-top: 3%;
 }
+
+.description {
+  height: 80px;
+  width: 40%;
+  background-color: #F2F3FE;
+  font-size: 18px;
+  font-weight: 400;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.app button:hover {
+  cursor: pointer;
+}
+
+.landing {
+  width: 70%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.landing button {
+  width: 20%;
+  height: 60px;
+  background: none;
+  border: none;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: left;
+  color: #C1C3D8;
+
+}
+
+.landing button:hover {
+  border-bottom: 10px solid #181946;
+  color: #181946
+}
+
+.title {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 40%;
+}
+
+.letter {
+  font-size: 65px;
+  width: 15%;
+  height: 15%;
+  text-align: center;
+  border-radius: 10px;
+  font-weight:bolder;
+  color: white;
+  background-color: #181946;
+}
+

@@ -7,11 +7,16 @@ const originalFood= ['15,15','16,15','15,16','16,16'];
 const originalSnake1 = ['10,10','11,10','12,10', '13,10', '14,10','15,10','16,10'];
 const originalSnake2 = ['10,20','11,20','12,20','13,20','14,20','15,20','16,20'];
 
-const Board = ({mode, player1, player2}) => {
+const Board = ({mode, limit, player, p1Name, p2Name, p2Color}) => {
 
   // single player:
   // currRow1, currCol1 belongs to computer
   // currRow2, currCol2 belongs to player2
+
+  if (mode === 'single') {
+    p1Name = 'Computer'
+    p2Name=player;
+  }
 
   // first snake current positions
   const [currRow1, setRow1] = useState(10);
@@ -147,7 +152,7 @@ const Board = ({mode, player1, player2}) => {
     let deltaCol =  Number(currCol1) - Number(foodCol);
 
     // temp fix for "not reaching the bounds and ended" bug
-    if (currRow1 <= 29 && currRow1 >= 0 && currCol1 >= 0 && currCol1 <= 29 && currRow2 <= 29 && currRow2 >= 0 && currCol2 >= 0 && currCol2 <= 29 && (score1 < 5 || score2 < 5)) {
+    if (currRow1 <= 29 && currRow1 >= 0 && currCol1 >= 0 && currCol1 <= 29 && currRow2 <= 29 && currRow2 >= 0 && currCol2 >= 0 && currCol2 <= 29 && score1 < limit && score2 < limit ) {
       var timer1 = setTimeout(()=>{
         // computer snake movements
         if (deltaRow > 0) {
@@ -207,24 +212,43 @@ const Board = ({mode, player1, player2}) => {
   if (over) {
     let message = '';
     if (won === 1) {
-      message = 'Player 1 won';
+      message = `${p1Name} won`;
     }
     if (won === 2) {
-      message = 'Player 2 won';
+      message = `${p2Name} won`;
     }
     if (won === 0) {
       message = 'Tie Game'
     }
     return (
-      <div className={styles.grid}>
+      <div className={styles.endScreen}>
         <h2>{message}</h2>
+        <h4>{p1Name} : {score1} , {p2Name} : {score2}</h4>
+          <button onClick={()=>window.location.reload()}>Restart</button>
       </div>
     )
   } else {
     return (
-      <>
-      <div className={styles.scoreContainer}>{player1} score: {score1} {player2} score2: {score2}</div>
+      <div className={styles.gameContainer}>
+        {countDown === 0?
+      <div className={styles.scoreContainer}>
+        <div className={styles.scoreLimitContainer}>
+          <span>Score Limit</span>
+          <div className={styles.scoreLimit}>{limit}</div>
+        </div>
 
+        <div className={styles.playerScoreContainer}>
+          <div className={styles.playerScore}>
+          <span style={{color:'red'}}>{p1Name}</span> {score1}
+          </div>
+          <div className={styles.playerScore}>
+          <span style={{color: p2Color}}>{player}</span> {score2}
+          </div>
+        </div>
+        </div>
+        :
+        null
+        }
       {countDown === 0?
       <div className={styles.grid}>
       {
@@ -232,7 +256,7 @@ const Board = ({mode, player1, player2}) => {
           return (
             <div key = {rowIndex} className={styles.row}>
               {row.map((cell,colIndex)=>
-                <Cell  food = {food.has(`${rowIndex},${colIndex}`)} snake2 = {snake2.has(`${rowIndex},${colIndex}`)} snake1 = {snake1.has(`${rowIndex},${colIndex}`)} currCoordinates = {{currRow1,currCol1}} cellCoordinates={`${rowIndex},${colIndex}`} key={colIndex+rowIndex}/>
+                <Cell  p2Color={p2Color} food = {food.has(`${rowIndex},${colIndex}`)} snake2 = {snake2.has(`${rowIndex},${colIndex}`)} snake1 = {snake1.has(`${rowIndex},${colIndex}`)} currCoordinates = {{currRow1,currCol1}} cellCoordinates={`${rowIndex},${colIndex}`} key={colIndex+rowIndex}/>
               )}
             </div>
           )
@@ -240,9 +264,12 @@ const Board = ({mode, player1, player2}) => {
       }
       </div>
       :
-      <div className={styles.countDown}>{countDown}</div>
+      <div className={styles.countDown}>
+        Game Starts In <br/>
+        {countDown}
+        </div>
       }
-      </>
+      </div>
     )
   }
 }

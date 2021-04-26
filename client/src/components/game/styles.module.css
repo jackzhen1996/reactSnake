@@ -1,5 +1,5 @@
 .cell {
-  border: 1px solid black;
+  /* border: 1px solid black; */
   flex: 1;
 }
 
@@ -8,11 +8,202 @@
   flex-direction: column;
   height: 500px;
   width: 500px;
+  flex:3;
+  border: 8px solid #181946;
+}
+
+.scoreContainer {
+  flex: 2.5;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.scoreLimitContainer span {
+  text-align: center;
+  font-size: 25px;
+}
+
+.scoreLimitContainer div {
+  margin-top: 10px;
+  font-size: 55px;
+}
+
+.scoreLimitContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.playerScoreContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 75%;
+  height: 25%;
+  background-color: #F2F3FE;
+  border-radius: 5px;
+}
+
+.playerScore {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 85%;
 }
 
 .row {
   display: flex;
   flex-direction: row;
   flex: 1
+
 }
+
+.gameRules {
+  width: 65%;
+}
+
+.gameContainer {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  width: 70%;
+}
+
+.inputContainer {
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: row;
+}
+
+.inputLeft {
+  flex:1;
+}
+
+.inputRight {
+  flex:1
+}
+
+.input {
+  display:flex;
+  flex-direction: column;
+  /* border: 1px solid black; */
+  margin-top: 30px;
+  margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.input label {
+  text-align: left;
+  /* border: 1px solid black; */
+  width: 52%;
+  margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.input input {
+  border: none;
+  background-color:#F2F3FE;
+  border-radius: 5px;
+  height: 40px;
+  font-size: 22px;
+  font-family: 'Roboto', sans-serif;
+  padding: 8px;
+  width: 50%;
+  margin-bottom: 20px;
+}
+
+.scoreInput {
+  width: 25%;
+}
+
+.startContainer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.startContainer button {
+  width: 30%;
+  background-color: #181946;
+  color: white;
+  border-radius: 10px;
+  font-size: 25px;
+  height: 65px;
+  border: none;
+}
+
+.colorGroup {
+  display: flex;
+  flex-direction: row;
+  width: 65%;
+  justify-content: space-evenly;
+  margin-left: 30px;
+}
+
+.colorGroup button {
+  width: 35px;
+  height: 35px;
+  border-radius: 5px;
+  border: none;
+}
+
+.colorGroup button:hover {
+  border: 5px solid #C1C3D8;
+  border-radius: 5px;
+}
+
+.clickedColor {
+  border: 5px solid #C1C3D8;
+  border-radius: 5px;
+
+}
+
+
+.countDown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 60px;
+  width: 100%;
+  margin-top:6%;
+  text-align: center;
+}
+
+.endScreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 60px;
+  width: 100%;
+  margin-top:6%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.endScreen button {
+  width: 30%;
+  background-color: #181946;
+  color: white;
+  border-radius: 10px;
+  font-size: 25px;
+  height: 65px;
+  border: none;
+
+}
+
+
 
