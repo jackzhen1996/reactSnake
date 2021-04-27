@@ -4,7 +4,7 @@ const http = require('http');
 const server = http.createServer(app);
 const {Server} = require('socket.io');
 const io = new Server(server);
-const port = 3000;
+const port = 8080;
 const path = require('path');
 
 app.use(express.json());
