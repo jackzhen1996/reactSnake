@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import styles from './styles.module.css';
 import Cell from './cell.jsx';
-import Snake from './snake.jsx';
 
 const originalFood= ['15,15','16,15','15,16','16,16'];
 const originalSnake1 = ['10,10','11,10','12,10', '13,10', '14,10','15,10','16,10'];
