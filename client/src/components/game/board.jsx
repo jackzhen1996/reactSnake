@@ -7,7 +7,7 @@ const originalFood= ['15,15','16,15','15,16','16,16'];
 const originalSnake1 = ['10,10','11,10','12,10', '13,10', '14,10','15,10','16,10'];
 const originalSnake2 = ['10,20','11,20','12,20','13,20','14,20','15,20','16,20'];
 
-const Board = ({mode, limit, player, p1Name, p2Name, p2Color}) => {
+const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
 
   // single player:
   // currRow1, currCol1 belongs to computer
@@ -22,9 +22,12 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color}) => {
   const [currRow1, setRow1] = useState(10);
   const [currCol1, setCol1] = useState(10);
 
+  const [direction1, setDirection1] = useState('w');
+
   // second snake current positions
   const [currRow2, setRow2] = useState(10);
   const [currCol2, setCol2] = useState(20);
+
 
   // p1 direction1
   const [direction2,setdirection2] = useState('ArrowDown');
@@ -53,6 +56,15 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color}) => {
   const getKey= (e) => {
       event.stopPropagation();
       setdirection2(e.key);
+      if (mode === 'multi') {
+        setDirection1(e.key);
+        let key = e.key;
+        if (key === 'w' || key === 'a' || key === 's' || key ==='d') {
+          io_updateSnake2Dir(key);
+        } else {
+          io_updateSnake1Dir(key);
+        }
+      }
   }
 
   // randomize food location
@@ -103,8 +115,27 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color}) => {
 
   }
 
+  // update snake1 info
+  const io_updateSnake1Dir = (dir) => {
+    console.log('socket in board')
+    socket.emit('p1Dir', dir);
+  };
+
+  // update snake2 info
+  const io_updateSnake2Dir = (pos) => {
+    socket.emit('p2Dir', pos);
+  };
+
+  // update food info
+  const io_updatePos = (pos) => {
+    socket.emit('foodHead', pos);
+  };
+
   // constantly moving in the direction1
   useEffect(()=>{
+
+    // receive updated coordinates from socket
+
 
     if (countDown > 0) {
       var countDownTimer = setTimeout(()=>{
@@ -145,32 +176,72 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color}) => {
       randomizeFoodLoc();
     }
 
-    // this is calculation for relative position of computer snake head from food
-    const foodRow = Array.from(food)[0].split(',')[0];
-    const foodCol = Array.from(food)[0].split(',')[1];
-    let deltaRow = Number(currRow1) - Number(foodRow);
-    let deltaCol =  Number(currCol1) - Number(foodCol);
 
     // temp fix for "not reaching the bounds and ended" bug
     if (currRow1 <= 29 && currRow1 >= 0 && currCol1 >= 0 && currCol1 <= 29 && currRow2 <= 29 && currRow2 >= 0 && currCol2 >= 0 && currCol2 <= 29 && score1 < limit && score2 < limit ) {
-      var timer1 = setTimeout(()=>{
-        // computer snake movements
-        if (deltaRow > 0) {
-          setRow1(row=>row-1);
-        }
-        else if (deltaRow < 0) {
-          setRow1(row=>row+1);
-        }
 
-        else if (deltaCol > 0) {
-          setCol1(col=>col-1);
-        }
+      // single player only
+      if (mode === 'single') {
+        // this is calculation for relative position of computer snake head from food
+        const foodRow = Array.from(food)[0].split(',')[0];
+        const foodCol = Array.from(food)[0].split(',')[1];
+        let deltaRow = Number(currRow1) - Number(foodRow);
+        let deltaCol =  Number(currCol1) - Number(foodCol);
+        var timer1 = setTimeout(()=>{
+          // computer snake movements
+          if (deltaRow > 0) {
+            setTimeout(()=>
+            setRow1(row=>row-1), 20);
+          }
+          else if (deltaRow < 0) {
+            setTimeout(()=>
+            setRow1(row=>row+1), 20);
+          }
 
-        else if (deltaCol < 0) {
-          setCol1(col=>col+1);
-        }
+          else if (deltaCol > 0) {
+            setCol1(col=>col-1);
+          }
 
-      }, 50)
+          else if (deltaCol < 0) {
+            setCol1(col=>col+1);
+          }
+
+        }, 80)
+      }
+
+      if (mode === 'multi') {
+        var timer1Mult = setTimeout(()=>{
+          switch (direction1) {
+            case 's':
+              setRow1(currRow1=>currRow1+1);
+              break;
+            case 'w':
+              setRow1(currRow1=>currRow1-1);
+              break;
+            case 'd':
+              setCol1(currCol1=>currCol1+1);
+              break;
+            case 'a':
+              setCol1(currCol1=>currCol1-1);
+              break;
+            default:
+              console.log('not valid key!')
+          }
+        },200);
+
+        socket.on('p1Dir', dir=>{
+          setDirection1(dir);
+        });
+
+        socket.on('p2Dir', dir=>{
+          setdirection2(dir);
+        });
+
+        // socket.on('foodPos', pos=>{
+        //   setFood()
+        // })
+
+      }
 
       var timer2 = setTimeout(()=>{
         switch (direction2) {
@@ -190,7 +261,8 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color}) => {
             console.log('not valid key!')
         }
 
-      },50)
+      },80);
+
 
 
     } else {
@@ -203,11 +275,12 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color}) => {
     return ()=>{
       clearTimeout(timer1);
       clearTimeout(timer2);
+      clearTimeout(timer1Mult);
       clearTimeout(countDownTimer);
       window.removeEventListener('keydown',getKey);
     }
   }
-  },[currRow1,currCol1,direction2,food, countDown]);
+  },[currRow1,currCol1,direction1,direction2,food, countDown]);
 
   if (over) {
     let message = '';

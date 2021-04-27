@@ -14,8 +14,9 @@
 
 .description {
   height: 80px;
-  width: 40%;
   background-color: #F2F3FE;
+  padding-left: 20px;
+  padding-right: 20px;
   font-size: 18px;
   font-weight: 400;
   border-radius: 10px;

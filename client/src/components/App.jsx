@@ -3,6 +3,10 @@ import styles from './styles.module.css';
 import Landing from './landing.jsx';
 import RulesAndControls from './game/gameRulesAndControls.jsx';
 import Title from './title.jsx';
+import SocketContext from './socketContext.jsx';
+const ENDPOINT = 'http://localhost:3000';
+import socketIOClient from 'socket.io-client';
+const socket = socketIOClient(ENDPOINT);
 
 const singlePlayer = {
   mode :'single',
@@ -23,6 +27,7 @@ const App = () => {
     changeMode(mode==='single'?true:false);
   }
   return (
+    <SocketContext.Provider value={socket}>
     <div className = {styles.app}>
       <Title/>
       {
@@ -48,6 +53,7 @@ const App = () => {
         <RulesAndControls getStart={setStart} data={multiPlayer}/>
       }
     </div>
+    </SocketContext.Provider>
   )
 };
 
