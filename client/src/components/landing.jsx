@@ -24,8 +24,8 @@ const Landing = ({chooseMode}) => {
 
   return (
     <div className={styles.landing}>
-      <button style={toggle==='single'? focusStyle: regularStyle} onClick={()=>handleClick('single')}><span>Single</span> Player</button>
-      <button style={toggle==='multi'? focusStyle: regularStyle} onClick={()=>handleClick('multi')}><span>Two Pl</span>ayers</button>
+      <button style={toggle==='single'? focusStyle: regularStyle} onClick={()=>handleClick('single')}>Single Player</button>
+      <button style={toggle==='multi'? focusStyle: regularStyle} onClick={()=>handleClick('multi')}>Two Players<span style={{fontSize:'12px'}}> (In progress)</span></button>
     </div>
   )
 };
