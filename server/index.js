@@ -9,6 +9,7 @@ const path = require('path');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
+app.set('port', process.env.PORT || 8080);
 
 io.on('connection', socket=>{
   console.log( `${socket.id} connected`);
@@ -55,6 +56,6 @@ io.on('connection', socket=>{
 });
 
 
-server.listen(port, () => {
+server.listen(app.get('port'), () => {
   console.log(`Snake running on ${port}`)
 })
