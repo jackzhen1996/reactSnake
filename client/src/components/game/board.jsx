@@ -21,6 +21,11 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
   const [currRow1, setRow1] = useState(10);
   const [currCol1, setCol1] = useState(10);
 
+  const delay = mode === 'single'? 80: 80;
+
+  // turn on event listener
+  const [listening, setListening] = useState(false);
+
   const [direction1, setDirection1] = useState('w');
 
   // second snake current positions
@@ -52,18 +57,40 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
   const [won,setWon] = useState(null);
 
   // get the current direction1 when key pressed
-  const getKey= (e) => {
-      event.stopPropagation();
-      setdirection2(e.key);
-      if (mode === 'multi') {
-        setDirection1(e.key);
+  const getKey1= (e) => {
+      e.stopPropagation();
+
+      // setdirection2(e.key);
+      // if (mode === 'multi') {
         let key = e.key;
-        if (key === 'w' || key === 'a' || key === 's' || key ==='d') {
-          io_updateSnake2Dir(key);
-        } else {
-          io_updateSnake1Dir(key);
+        if (key === 'ArrowUp' || key === 'ArrowDown' || key === 'ArrowLeft' || key === 'ArrowRight') {
+          if (mode ==='multi') {
+            io_updateSnake2Dir(key);
+          } else {
+            setdirection2(key);
+          }
         }
+
+      //   let key = e.key;
+      //   if (key === 'w' || key === 'a' || key === 's' || key ==='d') {
+      //     io_updateSnake2Dir(key);
+      //   } else {
+      //     io_updateSnake1Dir(key);
+      //   }
+      // }
+  }
+
+  const getKey2 = (e) => {
+    console.log(e.key)
+    e.stopPropagation();
+    let key = e.key;
+    if (key === 'w' || key === 'a' || key === 's' || key ==='d') {
+      if (mode === 'multi') {
+        io_updateSnake1Dir(key);
+      } else {
+        setDirection1(key);
       }
+    }
   }
 
   // randomize food location
@@ -71,7 +98,11 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
     const row = Math.floor(Math.random()*30).toFixed(0);
     const col = Math.floor(Math.random()*30).toFixed(0);
     // set a new set of coordinates
-    setFood(new Set([`${row},${col}`,`${Number(row)+1},${col}`,`${row},${Number(col)+1}`,`${Number(row)+1},${Number(col)+1}`]));
+    if (mode === 'single') {
+      setFood(new Set([`${row},${col}`,`${Number(row)+1},${col}`,`${row},${Number(col)+1}`,`${Number(row)+1},${Number(col)+1}`]));
+    } else {
+      return [row,col];
+    }
   }
 
   // returns an 30 x 30 array
@@ -87,16 +118,24 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
     return arr;
   }
 
-  window.addEventListener('keydown',getKey);
-
   // increase score if player eats food
   const incrementScore = (player1,player2) => {
-    if (food.has(player1)) {
-      setScore1(score1=>score1+1);
-    }
-    if (food.has(player2)) {
-      setScore2(score2=>score2+1);
-    }
+      if (food.has(player1)) {
+        if (mode === 'single') {
+          setScore1(score1=>score1+1);
+        } else {
+          const [row,col] = randomizeFoodLoc();
+          io_updatePos(row,col);
+        }
+      } else
+      if (food.has(player2)) {
+        if (mode === 'single') {
+          setScore2(score2=>score2+1);
+        } else {
+          const [row,col] = randomizeFoodLoc();
+          io_updatePos(row,col);
+        }
+      }
   }
 
   // evaluate winner
@@ -116,7 +155,6 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
 
   // update snake1 info
   const io_updateSnake1Dir = (dir) => {
-    console.log('socket in board')
     socket.emit('p1Dir', dir);
   };
 
@@ -126,12 +164,36 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
   };
 
   // update food info
-  const io_updatePos = (pos) => {
-    socket.emit('foodHead', pos);
+  const io_updatePos = (row,col) => {
+    socket.emit('food', `${row},${col}`);
   };
 
   // constantly moving in the direction1
   useEffect(()=>{
+
+    socket.on('p1Dir', dir=>{
+      setDirection1(dir);
+    });
+
+    socket.on('p2Dir', dir=>{
+      setdirection2(dir);
+    });
+
+    socket.on('food', pos=>{
+      const [row,col] = pos.split(',');
+      setFood(new Set([`${row},${col}`,`${Number(row)+1},${col}`,`${row},${Number(col)+1}`,`${Number(row)+1},${Number(col)+1}`]));
+    });
+
+    socket.on('over', over=>{
+      setOver(over);
+    })
+
+    if (!listening) {
+      setListening(true);
+      window.addEventListener('keydown',getKey1);
+      window.addEventListener('keydown',getKey2);
+    }
+
 
     // receive updated coordinates from socket
 
@@ -177,7 +239,7 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
 
 
     // temp fix for "not reaching the bounds and ended" bug
-    if (currRow1 <= 29 && currRow1 >= 0 && currCol1 >= 0 && currCol1 <= 29 && currRow2 <= 29 && currRow2 >= 0 && currCol2 >= 0 && currCol2 <= 29 && score1 < limit && score2 < limit ) {
+    if (currRow1 <= 29 && currRow1 >= 0 && currCol1 >= 0 && currCol1 <= 29 && currRow2 <= 29 && currRow2 >= 0 && currCol2 >= 0 && currCol2 <= 29 && score1 < limit && score2 < limit && !over ) {
 
       // single player only
       if (mode === 'single') {
@@ -205,7 +267,7 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
             setCol1(col=>col+1);
           }
 
-        }, 80)
+        }, delay)
       }
 
       if (mode === 'multi') {
@@ -226,15 +288,7 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
             default:
               console.log('not valid key!')
           }
-        },200);
-
-        socket.on('p1Dir', dir=>{
-          setDirection1(dir);
-        });
-
-        socket.on('p2Dir', dir=>{
-          setdirection2(dir);
-        });
+        },delay);
 
         // socket.on('foodPos', pos=>{
         //   setFood()
@@ -260,7 +314,7 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
             console.log('not valid key!')
         }
 
-      },80);
+      },delay);
 
 
 
@@ -276,10 +330,9 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
       clearTimeout(timer2);
       clearTimeout(timer1Mult);
       clearTimeout(countDownTimer);
-      window.removeEventListener('keydown',getKey);
     }
   }
-  },[currRow1,currCol1,direction1,direction2,food, countDown]);
+  },[currRow1,currCol1,direction1,direction2,food,countDown]);
 
   if (over) {
     let message = '';
@@ -314,7 +367,7 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, socket}) => {
           <span style={{color:'red'}}>{p1Name}</span> {score1}
           </div>
           <div className={styles.playerScore}>
-          <span style={{color: p2Color}}>{player}</span> {score2}
+          <span style={{color: p2Color}}>{p2Name}</span> {score2}
           </div>
         </div>
         </div>

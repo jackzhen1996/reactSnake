@@ -4,7 +4,7 @@ import Landing from './landing.jsx';
 import RulesAndControls from './game/gameRulesAndControls.jsx';
 import Title from './title.jsx';
 import SocketContext from './socketContext.jsx';
-const ENDPOINT = 'http://localhost:3000';
+const ENDPOINT = 'http://localhost:8080';
 import socketIOClient from 'socket.io-client';
 const socket = socketIOClient(ENDPOINT);
 

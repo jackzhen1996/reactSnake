@@ -74,6 +74,7 @@ const GameRulesAndControls = ({data, getStart}) => {
   };
 
   useEffect(()=>{
+
     if (mode === 'multi') {
       socket.on('p1Ready', ready=>{
         setP1Ready(ready);
@@ -97,7 +98,7 @@ const GameRulesAndControls = ({data, getStart}) => {
 
   if (start) {
     return (
-    <Board socket={socket} limit={limit} player={mode==='single' && p1Name} p2Color={p2Color} mode={mode}/>
+    <Board p1Name={p1Name} p2Name={p2Name} socket={socket} limit={limit} player={mode==='single' && p1Name} p2Color={p2Color} mode={mode}/>
     )
 
   } else {

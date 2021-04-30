@@ -53,6 +53,15 @@ io.on('connection', socket=>{
     io.emit('p2Dir', dir);
   });
   // emit food location
+  socket.on('food', pos=>{
+    console.log('pos is ' + pos )
+    io.emit('food', pos);
+  });
+
+  // emit game over
+  socket.on('over', over=>{
+    io.emit('over', over);
+  })
 });
 
 
