@@ -4,12 +4,12 @@ const http = require('http');
 const server = http.createServer(app);
 const {Server} = require('socket.io');
 const io = new Server(server);
-const port = 8080;
+const port = 3000;
 const path = require('path');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 3000);
 
 io.on('connection', socket=>{
   console.log( `${socket.id} connected`);
