@@ -8,6 +8,7 @@ const ColorPicker = ({getColor}) => {
 
   const getSelectedColor = (k) => {
     setIndex(k);
+    console.log(colors[k])
     getColor(colors[k]);
   }
 

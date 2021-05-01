@@ -61,7 +61,25 @@ io.on('connection', socket=>{
   // emit game over
   socket.on('over', over=>{
     io.emit('over', over);
-  })
+  });
+
+  socket.on('p1Color',color=>{
+    io.emit('p1Color',color);
+  });
+
+  socket.on('p2Color',color=>{
+    io.emit('p2Color',color);
+  });
+
+  socket.on('score1', score=>{
+    console.log('score 1 ' + score)
+    io.emit('score1', score);
+  });
+
+  socket.on('score2', score=>{
+    console.log('score 2 ' + score)
+    io.emit('score2', score);
+  });
 });
 
 

@@ -18,19 +18,8 @@ const GameRulesAndControls = ({data, getStart}) => {
   const [p1Ready, setP1Ready] = useState(false);
   const [p2Ready, setP2Ready] = useState(false);
 
-  const [p2Color, getColor] = useState('#181946');
-
-  // Single player
-  // player name and color
-
-  // score limit
-
-  // color picker
-
-  // Mutiplayer
-  // player 1 name and color
-  // player 2 name and color
-  // score limit
+  const [p1Color,getColor1] = useState('#181946');
+  const [p2Color, getColor2] = useState('#181946');
 
   const handleP1Ready = () => {
     socket.emit('p1Ready', !p1Ready);
@@ -43,28 +32,32 @@ const GameRulesAndControls = ({data, getStart}) => {
   const handleNameChange = (e,player) => {
     if (player === 1) {
       setP1Name(e.target.value);
-      console.log(p1Name)
     } else {
       setP2Name(e.target.value);
-      console.log(p2Name)
-
     }
   };
 
+
   const io_sendNames= (p1Name,p2name) => {
-      socket.emit('p1Name', p1Name);
-      socket.emit('p2Name', p2Name);
+    socket.emit('p1Name', p1Name);
+    socket.emit('p2Name', p2Name);
+  };
+
+  const io_sendColor = (p1Color,p2Color) => {
+    socket.emit('p1Color', p1Color);
+    socket.emit('p2Color', p2Color);
   }
 
   const handleScore = (e) => {
     setLimit(e.target.value);
-  }
+  };
 
 
   const handleStart = () => {
     // send these two names to server
     if (mode === 'multi') {
       io_sendNames(p1Name,p2Name);
+      io_sendColor(p1Color,p2Color);
       socket.emit('start', true);
     } else {
       setStart(true);
@@ -91,14 +84,20 @@ const GameRulesAndControls = ({data, getStart}) => {
       socket.on('start', start=>{
         setStart(true);
       });
+      socket.on('p1Color',color=>{
+        getColor1(color);
+      });
+      socket.on('p2Color',color=>{
+        getColor2(color);
+      })
     }
 
-  },[p1Name,p2Name,p1Ready,p2Ready,start,mode])
+  },[p1Name,p2Name,p1Ready,p2Ready,start,mode,p1Color,p2Color])
 
 
   if (start) {
     return (
-    <Board p1Name={p1Name} p2Name={p2Name} socket={socket} limit={limit} player={mode==='single' && p1Name} p2Color={p2Color} mode={mode}/>
+    <Board p1Name={p1Name} p2Name={p2Name} socket={socket} limit={limit} player={mode==='single' && p1Name} p1Color={p1Color} p2Color={p2Color} mode={mode}/>
     )
 
   } else {
@@ -114,7 +113,7 @@ const GameRulesAndControls = ({data, getStart}) => {
               <button onClick={handleP1Ready} className={styles.ready}>{p1Ready? 'Not Ready':'Ready!'}</button>
               }
             </div>
-            <ColorPicker getColor={getColor}/>
+            <ColorPicker getColor={getColor1}/>
           </div>
         {mode === 'multi'&&
           <div className={styles.input}>
@@ -125,7 +124,7 @@ const GameRulesAndControls = ({data, getStart}) => {
                 <button onClick={handleP2Ready} className={styles.ready}>{p2Ready? 'Not Ready':'Ready!'}</button>
                }
             </div>
-            <ColorPicker getColor={getColor}/>
+            <ColorPicker getColor={getColor2}/>
           </div>
 
         }
