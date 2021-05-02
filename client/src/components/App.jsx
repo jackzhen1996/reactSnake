@@ -6,10 +6,7 @@ import Title from './title.jsx';
 import SocketContext from './socketContext.jsx';
 const ENDPOINT = `http://localhost:${process.env.PORT}`;
 import socketIOClient from 'socket.io-client';
-const socket = socketIOClient(ENDPOINT, {
-  transports: ['websocket']
-}
-  );
+const socket = socketIOClient(ENDPOINT);
 
 const singlePlayer = {
   mode :'single',

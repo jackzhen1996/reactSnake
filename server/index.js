@@ -6,10 +6,14 @@ const http = require('http').createServer(app);
 const path = require('path');
 // const httpProxy = require('http-proxy');
 const io = require("socket.io")(http,{
-  cors: {
-    origin: ['*'],
-    methods: ['GET','POST']
-  }
+  handlePreflightRequest: (req, res) => {
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+    };
+    res.writeHead(200, headers);
+    res.end();
+}
 });
 require('dotenv').config();
 
