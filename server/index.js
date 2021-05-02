@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const http = require('http').createServer(app);
 // const server = http.createServer(app);
@@ -6,7 +7,7 @@ const path = require('path');
 // const httpProxy = require('http-proxy');
 const io = require("socket.io")(http,{
   cors: {
-    origin: "http://54.183.2.204:3000/",
+    origin: "*",
     methods: ["GET", "POST"]
   }
 });
@@ -14,6 +15,7 @@ require('dotenv').config();
 
 // serve static file
 app.use(express.json());
+app.use(cors());
 app.use(express.static(path.join(__dirname, '../client/public')));
 app.set('port', process.env.PORT);
 

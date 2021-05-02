@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/jackzhen1996/reactSnake#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "css-loader": "^5.2.1",
     "dotenv": "^8.2.0",
     "dotenv-webpack": "^7.0.2",
