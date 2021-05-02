@@ -6,7 +6,7 @@ const path = require('path');
 const httpProxy = require('http-proxy');
 const io = require("socket.io")(server, {
   cors: {
-    origin: "https://localhost:3001",
+    origin: "https://localhost:3000",
     methods: ["GET", "POST"]
   }
 });
