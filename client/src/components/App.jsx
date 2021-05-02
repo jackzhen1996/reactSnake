@@ -6,7 +6,18 @@ import Title from './title.jsx';
 import SocketContext from './socketContext.jsx';
 const ENDPOINT = `http://localhost:${process.env.PORT}`;
 import socketIOClient from 'socket.io-client';
-const socket = socketIOClient(ENDPOINT);
+const socket = socketIOClient(ENDPOINT,
+    {
+      withCredential:true,
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            'my-custom-header': 'abcd'
+          }
+        }
+      }
+    }
+  );
 
 const singlePlayer = {
   mode :'single',
