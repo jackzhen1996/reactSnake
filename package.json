@@ -21,6 +21,8 @@
   "homepage": "https://github.com/jackzhen1996/reactSnake#readme",
   "dependencies": {
     "css-loader": "^5.2.1",
+    "dotenv": "^8.2.0",
+    "dotenv-webpack": "^7.0.2",
     "express": "^4.17.1",
     "http-proxy": "^1.18.1",
     "react": "^16.14.0",
