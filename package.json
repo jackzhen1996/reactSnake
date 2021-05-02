@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/index.js",
+    "start": "nodemon server/index.js",
     "dev": "webpack --watch",
     "build": "webpack"
   },
@@ -22,6 +22,7 @@
   "dependencies": {
     "css-loader": "^5.2.1",
     "express": "^4.17.1",
+    "http-proxy": "^1.18.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "socket.io": "^4.0.1",

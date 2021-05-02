@@ -2,14 +2,42 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-const {Server} = require('socket.io');
-const io = new Server(server);
-const port = 3000;
+const port = 3001;
 const path = require('path');
-
+const httpProxy = require('http-proxy');
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "https://localhost:3001",
+    methods: ["GET", "POST"]
+  }
+});
+// serve static file
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || port);
+
+// var proxy = new httpProxy.createProxyServer({
+//   target: {
+//     host: 'localhost',
+//     port: 3000
+//   }
+// });
+// var proxyServer = http.createServer(function (req, res) {
+  // proxy.web(req, res);
+// });
+
+
+// Listen to the `upgrade` event and proxy the
+// WebSocket requests as well.
+
+// proxyServer.on('', function (req, socket, head) {
+//   proxy.ws(req, socket, head);
+// });
+
+// proxyServer.listen(3001)
+//   .listen(3001,()=>{
+//     console.log(`snake api at ${port}`)
+//   });
 
 io.on('connection', socket=>{
   console.log( `${socket.id} connected`);
@@ -84,5 +112,5 @@ io.on('connection', socket=>{
 
 
 server.listen(app.get('port'), () => {
-  console.log(`Snake running on ${port}`)
+  console.log(`Snake client running on ${port}`)
 })

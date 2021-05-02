@@ -4,13 +4,13 @@ import Landing from './landing.jsx';
 import RulesAndControls from './game/gameRulesAndControls.jsx';
 import Title from './title.jsx';
 import SocketContext from './socketContext.jsx';
-const ENDPOINT = 'http://localhost:3000';
+const ENDPOINT = 'http://localhost:3001';
 import socketIOClient from 'socket.io-client';
 const socket = socketIOClient(ENDPOINT);
 
 const singlePlayer = {
   mode :'single',
-  description: "You vs a computer controlled snake. You'll probably lose. Use arrow keys to control",
+  description: "You vs a computer controlled snake. You'll probably lose LOL. Use arrow keys to control",
 }
 
 const multiPlayer = {
