@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors')
 const app = express();
 const http = require('http').createServer(app);
 // const server = http.createServer(app);
@@ -7,8 +7,16 @@ const path = require('path');
 // const httpProxy = require('http-proxy');
 const io = require("socket.io")(http,{
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
+    origin: ['*'],
+    handlePreflightRequest:  (req,res) => {
+      res.writeHead(200, {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST',
+        'Access-Control-Allow-Headers': 'my-custom-header',
+        'Access-Control-Allow-Credentials': true
+      });
+      res.end();
+    }
   }
 });
 require('dotenv').config();
