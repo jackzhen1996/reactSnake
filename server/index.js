@@ -4,7 +4,11 @@ const http = require('http').createServer(app);
 // const server = http.createServer(app);
 const path = require('path');
 // const httpProxy = require('http-proxy');
-const io = require("socket.io")(http);
+const io = require("socket.io")(http,{
+  cors: {
+    origin: "http://54.183.2.204:3000/"
+  }
+});
 require('dotenv').config();
 
 // serve static file
