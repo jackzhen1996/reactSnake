@@ -4,13 +4,14 @@ const http = require('http');
 const server = http.createServer(app);
 const path = require('path');
 const httpProxy = require('http-proxy');
-const io = require("socket.io")(http);
+const io = require("socket.io")(server);
 
 require('dotenv').config();
 
 // serve static file
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
+app.set('port', process.env.PORT);
 
 // var proxy = new httpProxy.createProxyServer({
 //   target: {
@@ -107,6 +108,6 @@ io.on('connection', socket=>{
 });
 
 
-server.listen(process.env.PORT, () => {
+server.listen(app.get('port'), () => {
   console.log(`Snake client running on ${process.env.PORT}`)
 })
