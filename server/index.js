@@ -6,7 +6,8 @@ const path = require('path');
 // const httpProxy = require('http-proxy');
 const io = require("socket.io")(http,{
   cors: {
-    origin: "http://54.183.2.204:3000/"
+    origin: "http://54.183.2.204:3000/",
+    methods: ["GET", "POST"]
   }
 });
 require('dotenv').config();
