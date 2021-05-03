@@ -46,76 +46,76 @@ app.set('port', process.env.PORT);
 //     console.log(`snake api at ${port}`)
 //   });
 
-io.on('connection', socket=>{
-  console.log( `${socket.id} connected`);
-  socket.on('disconnect', ()=>{
-    console.log('user disconnected')
-  });
+// io.on('connection', socket=>{
+//   console.log( `${socket.id} connected`);
+//   socket.on('disconnect', ()=>{
+//     console.log('user disconnected')
+//   });
 
-  // emit player 1 name to everyone
-  socket.on('p1Name', name=>{
-    io.emit('p1Name', name);
-  });
+//   // emit player 1 name to everyone
+//   socket.on('p1Name', name=>{
+//     io.emit('p1Name', name);
+//   });
 
-  // emit player 2 name to everyone
-  socket.on('p2Name', name=>{
-    io.emit('p2Name', name);
-  });
+//   // emit player 2 name to everyone
+//   socket.on('p2Name', name=>{
+//     io.emit('p2Name', name);
+//   });
 
-  // emit player 1 ready
-  socket.on('p1Ready', ready=>{
-    console.log(`p1 is ${ready}`)
-    io.emit('p1Ready', ready);
-  });
-  // emit player 2 ready
-  socket.on('p2Ready', ready=>{
-    console.log(`p2 is ${ready}`)
-    io.emit('p2Ready', ready);
-  });
+//   // emit player 1 ready
+//   socket.on('p1Ready', ready=>{
+//     console.log(`p1 is ${ready}`)
+//     io.emit('p1Ready', ready);
+//   });
+//   // emit player 2 ready
+//   socket.on('p2Ready', ready=>{
+//     console.log(`p2 is ${ready}`)
+//     io.emit('p2Ready', ready);
+//   });
 
-  // emit start game
-  socket.on('start', start=>{
-    console.log(`start game!`)
-    io.emit('start', start);
-  });
+//   // emit start game
+//   socket.on('start', start=>{
+//     console.log(`start game!`)
+//     io.emit('start', start);
+//   });
 
-  // emit player 1 position
-  socket.on('p1Dir', dir=>{
-    io.emit('p1Dir', dir);
-  });
-  // emit player 2 position
-  socket.on('p2Dir', dir=>{
-    io.emit('p2Dir', dir);
-  });
-  // emit food location
-  socket.on('food', pos=>{
-    console.log('pos is ' + pos )
-    io.emit('food', pos);
-  });
+//   // emit player 1 position
+//   socket.on('p1Dir', dir=>{
+//     io.emit('p1Dir', dir);
+//   });
+//   // emit player 2 position
+//   socket.on('p2Dir', dir=>{
+//     io.emit('p2Dir', dir);
+//   });
+//   // emit food location
+//   socket.on('food', pos=>{
+//     console.log('pos is ' + pos )
+//     io.emit('food', pos);
+//   });
 
-  // emit game over
-  socket.on('over', over=>{
-    io.emit('over', over);
-  });
+//   // emit game over
+//   socket.on('over', over=>{
+//     io.emit('over', over);
+//   });
 
-  socket.on('p1Color',color=>{
-    io.emit('p1Color',color);
-  });
+//   socket.on('p1Color',color=>{
+//     io.emit('p1Color',color);
+//   });
 
-  socket.on('p2Color',color=>{
-    io.emit('p2Color',color);
-  });
+//   socket.on('p2Color',color=>{
+//     io.emit('p2Color',color);
+//   });
 
-  socket.on('score1', score=>{
-    console.log('score 1 ' + score)
-    io.emit('score1', score);
-  });
+//   socket.on('score1', score=>{
+//     console.log('score 1 ' + score)
+//     io.emit('score1', score);
+//   });
 
-  socket.on('score2', score=>{
-    console.log('score 2 ' + score)
-    io.emit('score2', score);
-  });
-});
+//   socket.on('score2', score=>{
+//     console.log('score 2 ' + score)
+//     io.emit('score2', score);
+//   });
+// });
 
 
 http.listen(app.get('port'), () => {
