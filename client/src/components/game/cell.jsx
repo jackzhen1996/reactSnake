@@ -5,7 +5,6 @@ import styles from './styles.module.css';
 const Cell = ({food,snake1, snake2, currCoordinates, cellCoordinates, p2Color,p1Color}) => {
   const {currRow,currCol} = currCoordinates;
   let color = 'white';
-
   if (snake1) {
     color = p1Color;
   }

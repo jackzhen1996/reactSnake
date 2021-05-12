@@ -4,8 +4,12 @@ import Landing from './landing.jsx';
 import RulesAndControls from './game/gameRulesAndControls.jsx';
 import Title from './title.jsx';
 import SocketContext from './socketContext.jsx';
-const ENDPOINT = `http://52.53.194.149:3000`;
+const ENDPOINT =
+'http://localhost:3001'
+// 'http://52.53.194.149:3000';
 import socketIOClient from 'socket.io-client';
+import RoomSetup from './game/roomSetup.jsx';
+
 const socket = socketIOClient(ENDPOINT,{
   transports: ['websocket']
 });
@@ -17,7 +21,7 @@ const singlePlayer = {
 
 const multiPlayer = {
   mode :'multi',
-  description: 'You vs another player',
+  description: 'You vs another player. Player 1 uses arrow keys, Player 2 uses W,A,S,D',
 }
 
 const App = () => {
@@ -52,7 +56,7 @@ const App = () => {
         // description of game rules and controls for both modes, game starts after pressing start
         <RulesAndControls getStart={setStart} data={singlePlayer}/>
           :
-        <RulesAndControls getStart={setStart} data={multiPlayer}/>
+        <RoomSetup getStart={setStart} data={multiPlayer}/>
       }
     </div>
     </SocketContext.Provider>

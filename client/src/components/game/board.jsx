@@ -6,7 +6,7 @@ const originalFood= ['15,15','16,15','15,16','16,16'];
 const originalSnake1 = ['10,10','11,10','12,10', '13,10', '14,10','15,10','16,10'];
 const originalSnake2 = ['10,20','11,20','12,20','13,20','14,20','15,20','16,20'];
 
-const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) => {
+const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket, roomId, host}) => {
   // single player:
   // currRow1, currCol1 belongs to computer
   // currRow2, currCol2 belongs to player2
@@ -24,7 +24,7 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
   const [currRow1, setRow1] = useState(10);
   const [currCol1, setCol1] = useState(10);
 
-  const delay = mode === 'single'? 80: 80;
+  const delay = mode === 'single'? 80: 100;
 
   // turn on event listener
   const [listening, setListening] = useState(false);
@@ -39,7 +39,7 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
   // p1 direction1
   const [direction2,setdirection2] = useState('ArrowDown');
 
-  const [countDown,setCountdDown] = useState(3);
+  const [countDown,setCountdDown] = useState(5);
 
   const [score1,setScore1] = useState(0);
   const [score2,setScore2] = useState(0);
@@ -58,6 +58,12 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
   const [snake2,setSnake2] = useState(new Set());
 
   const [won,setWon] = useState(null);
+
+  const socket_send = (type, data) => {
+    const obj = { data, roomId };
+    socket.emit(type, obj);
+  };
+
 
   // get the current direction1 when key pressed
   const getKey1= (e) => {
@@ -111,34 +117,39 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
   const makeBoard = () => {
 
     const arr = [];
+    let i = 0;
     for (let row = 0; row < 30; row++) {
         arr.push([]);
       for (let col = 0; col < 30; col++) {
-        arr[row].push(1);
+        i ++;
+        arr[row].push(i);
       }
+      i ++;
     }
     return arr;
   }
 
   // increase score if player eats food
   const incrementScore = (player1,player2) => {
-
-      if (food.has(player1)) {
+      if (player1) {
         if (mode === 'single') {
           setScore1(score1=>score1+1);
         } else {
-          const [row,col] = randomizeFoodLoc();
-          io_updatePos(row,col);
           io_updateScore(score1);
         }
-      } else if (food.has(player2)) {
+      } else if (player2) {
         if (mode === 'single') {
           setScore2(score2=>score2+1);
         } else {
-          const [row,col] = randomizeFoodLoc();
-          io_updatePos(row,col);
           io_updateScore(null,score2);
         }
+      }
+
+      if(mode === 'multi') {
+        const [row,col] = randomizeFoodLoc();
+        io_updatePos(row,col);
+      } else {
+        randomizeFoodLoc();
       }
   }
 
@@ -159,27 +170,38 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
 
   // update snake1 info
   const io_updateSnake1Dir = (dir) => {
-    socket.emit('p1Dir', dir);
+    // socket.emit('p1Dir', dir);
+    socket_send('p1Dir',dir);
   };
 
   // update snake2 info
-  const io_updateSnake2Dir = (pos) => {
-    socket.emit('p2Dir', pos);
+  const io_updateSnake2Dir = (dir) => {
+    // socket.emit('p2Dir', pos);
+    socket_send('p2Dir',dir);
   };
 
   // update food info
   const io_updatePos = (row,col) => {
-    socket.emit('food', `${row},${col}`);
+    // socket.emit('food', `${row},${col}`);
+    socket_send('food', `${row},${col}`);
   };
 
   // update score
   const io_updateScore = (score1,score2) => {
     if (score1) {
-      socket.emit('score1', score1+1);
+      // socket.emit('score1', score1+1);
+      socket_send('score1', score1+1);
     } else {
-      socket.emit('score2', score2+1);
+      socket_send('score2', score2+1);
     }
   };
+
+  // update head
+  const io_updateHeads = (row1,col1,row2,col2) => {
+    // socket.emit('heads', `${head1},${}`)
+    socket_send('pos1', `${row1},${col1}`);
+    socket_send('pos2', `${row2},${col2}`);
+  }
 
   // constantly moving in the direction1
   useEffect(()=>{
@@ -203,20 +225,24 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
       });
 
       socket.on('score1', score=>{
-        console.log('score1 ' + score)
         setScore1(score);
       });
 
       socket.on('score2', score=>{
-        console.log('score2 ' + score)
         setScore2(score);
       });
-    }
 
-    if (!listening) {
-      setListening(true);
-      window.addEventListener('keydown',getKey1);
-      window.addEventListener('keydown',getKey2);
+      socket.on('p1Pos', score=>{
+        const [row,col] = pos.split(',');
+        setRow1(row);
+        setCol1(col);
+      });
+
+      socket.on('p2Pos', score=>{
+        const [row,col] = pos.split(',');
+        setRow2(row);
+        setCol2(col);
+      });
     }
 
     if (countDown > 0) {
@@ -226,6 +252,12 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
     }
 
     if (countDown === 0) {
+
+      if (!listening) {
+        setListening(true);
+        window.addEventListener('keydown',getKey1);
+        window.addEventListener('keydown',getKey2);
+      }
 
         // snake1
         const currXY1 = `${currRow1},${currCol1}`;
@@ -250,14 +282,6 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
         addMoves2 = addMoves2.slice(1);
         setMoves2(addMoves2);
         setSnake2(new Set(moves2));
-
-    // check if head touches food
-    if (food.has(currXY1) || food.has(currXY2)) {
-      incrementScore(currXY1,currXY2);
-      // randomize food location
-      randomizeFoodLoc();
-    }
-
 
     // temp fix for "not reaching the bounds and ended" bug
     if (currRow1 <= 29 && currRow1 >= 0 && currCol1 >= 0 && currCol1 <= 29 && currRow2 <= 29 && currRow2 >= 0 && currCol2 >= 0 && currCol2 <= 29 && score1 < limit && score2 < limit && !over ) {
@@ -315,6 +339,10 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
         //   setFood()
         // })
 
+        var updatePosTimer = setTimeout(()=>{
+          socket.emit('p1Pos',`${currRow1},${currCol1}`);
+          socket.emit('p2Pos',`${currRow2},${currCol2}`)
+        },500);
       }
 
       var timer2 = setTimeout(()=>{
@@ -350,10 +378,43 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer1Mult);
+      clearTimeout(updatePosTimer);
       clearTimeout(countDownTimer);
     }
   }
   },[currRow1,currCol1,direction1,direction2,food,countDown,score1,score2]);
+
+  useEffect(()=>{
+    // check if head touches food and current player is the right player
+    const currXY1 = `${currRow1},${currCol1}`;
+    const currXY2 = `${currRow2},${currCol2}`;
+
+    if (food.has(currXY1) && host) {
+      incrementScore(currXY1);
+      console.log('ate food');
+    }
+    if (food.has(currXY2) && host) {
+      console.log('ate food')
+      incrementScore(null,currXY2)
+    }
+  },[currRow1,currCol1,currRow2,currCol2]);
+
+
+  useEffect(()=>{
+    io_updateHeads(currRow1,currCol1,currRow2,currCol2)
+    socket.on('pos1',pos=>{
+      const [row,col] = pos.split(',');
+      setRow1(row);
+      setCol1(col);
+    });
+
+    socket.on('pos2',pos=>{
+      const [row,col] = pos.split(',');
+      setRow2(row);
+      setCol2(col);
+    });
+
+  },[currRow1,currCol1,currRow2,currCol2]);
 
   if (over) {
     let message = '';
@@ -402,7 +463,7 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
           return (
             <div key = {rowIndex} className={styles.row}>
               {row.map((cell,colIndex)=>
-                <Cell  p2Color={p2Color} p1Color={mode==='single'?'red':p1Color} food = {food.has(`${rowIndex},${colIndex}`)} snake2 = {snake2.has(`${rowIndex},${colIndex}`)} snake1 = {snake1.has(`${rowIndex},${colIndex}`)} currCoordinates = {{currRow1,currCol1}} cellCoordinates={`${rowIndex},${colIndex}`} key={colIndex+rowIndex}/>
+                <Cell p2Color={p2Color} p1Color={mode==='single'?'red':p1Color} food = {food.has(`${rowIndex},${colIndex}`)} snake2 = {snake2.has(`${rowIndex},${colIndex}`)} snake1 = {snake1.has(`${rowIndex},${colIndex}`)} currCoordinates = {{currRow1,currCol1}} cellCoordinates={`${rowIndex},${colIndex}`} key={colIndex+rowIndex}/>
               )}
             </div>
           )
@@ -411,8 +472,12 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket}) =
       </div>
       :
       <div className={styles.countDown}>
+        <>
         Game Starts In <br/>
         {countDown}
+        </>
+        <div style={{color:p1Color}} className={styles.countDownName}>{p1Name} Controls:  <span style={{color:'black'}}>Arrow Keys</span></div>
+        <div style={{color:p2Color}} className={styles.countDownName}>{p2Name} Controls:  <span style={{color:'black'}}>W,A,S,D</span></div>
         </div>
       }
       </div>
