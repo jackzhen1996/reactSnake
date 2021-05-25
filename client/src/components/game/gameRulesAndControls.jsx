@@ -137,7 +137,7 @@ const GameRulesAndControls = ({ data, getStart }) => {
                 <div className={styles.input}>
                   <label>
                     {host ? (
-                      <span>You Are Host</span>
+                      <span>(You're Host)   </span>
                     ) : null}
                     Player 1 Name
                   </label>
@@ -154,11 +154,11 @@ const GameRulesAndControls = ({ data, getStart }) => {
                     }
                     {host ? (
                     <button onClick={handleP1Ready} className={styles.ready}>
-                      {p1Ready ? "Ready!" : "Not Ready"}
+                      {p1Ready ? "  Ready!" : "  Not Ready"}
                     </button>
                     ):
                     (
-                      <div>{p1Ready ? "Ready!" : "Not Ready"}
+                      <div>{p1Ready ? "  Ready!" : "  Not Ready"}
                       </div>
                     )
                     }
@@ -176,7 +176,7 @@ const GameRulesAndControls = ({ data, getStart }) => {
                 <div className={styles.input}>
                   <label>
                     {!host ? (
-                      <span>You are P2</span>
+                      <span>(You)</span>
                     ) : null}
                     Player 2 Name
                   </label>
@@ -193,10 +193,10 @@ const GameRulesAndControls = ({ data, getStart }) => {
                     }
                     {!host ?
                     <button onClick={handleP2Ready} className={styles.ready}>
-                      {p2Ready ? "Ready!" : "Not Ready"}
+                      {p2Ready ? "Ready!" : "  Not Ready"}
                     </button>
                     :
-                    <div>{p2Ready ? "Ready!" : "Not Ready"}
+                    <div>{p2Ready ? "Ready!" : "  Not Ready"}
                     </div>
                     }
                   </div>

@@ -16,7 +16,7 @@ const socket = socketIOClient(ENDPOINT,{
 
 const singlePlayer = {
   mode :'single',
-  description: "You vs a computer controlled snake. You'll probably lose LOL. Use arrow keys to control",
+  description: "You vs a computer controlled snake. You'll probably lose. Use arrow keys to control",
 }
 
 const multiPlayer = {

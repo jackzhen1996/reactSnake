@@ -47,8 +47,6 @@ const Board = ({mode, limit, player, p1Name, p2Name, p2Color, p1Color,socket, ro
 
   const [over,setOver] = useState(false)
 
-  const [ateFood, setAteFood] = useState(false);
-
   const [food,setFood] = useState(new Set(originalFood));
 
   const [moves1,setMoves1] = useState(originalSnake1);

@@ -35,7 +35,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   margin-bottom: 10px;
 }
 
@@ -102,7 +101,6 @@
 .input label {
   text-align: left;
   /* border: 1px solid black; */
-  width: 52%;
   margin-bottom: 10px;
   font-size: 22px;
   font-weight: 800;
@@ -132,14 +130,15 @@
   margin-top: 10px;
 }
 
-.startContainer button {
-  width: 30%;
+.startContainer button, .input button {
   background-color: #181946;
   color: white;
   border-radius: 10px;
   font-size: 25px;
   height: 65px;
   border: none;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .colorGroup {
