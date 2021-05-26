@@ -10,8 +10,8 @@ require('dotenv').config();
 // serve static file
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
-app.set('port', process.env.PORT);
+app.set('port', 3000);
 
 http.listen(app.get('port'), () => {
-  console.log(`Snake client running on ${process.env.PORT}`)
+  console.log(`Snake client running on 3000`)
 })
