@@ -34,14 +34,14 @@ const Room = ({data, getStart}) => {
   } else {
     return (
       <div>
-        <h2>Room Setup</h2>
+        <h2 style={{width: '100%', textAlign: 'center'}}>Room Setup</h2>
         <div className={styles.input}>
           <label>Enter room id</label>
+          <input style={{width: '500px'}} type='text' value={roomId} onChange={handleChange}></input>
           <button onClick={joinRoom}>Join Room</button>
-          <input type='text' value={roomId} onChange={handleChange}></input>
-        </div>
-        <div>
+          Or
           <button onClick={createRoomAndId}>Create Room</button>
+
         </div>
       </div>
     )
